@@ -1,5 +1,8 @@
 #pragma once
 
+#include "PCH.h"
+#include "Renderer.h"
+
 namespace Playground {
 
 	enum class DisplayMode {
@@ -37,10 +40,11 @@ namespace Playground {
 		void DestroyComponents();
 
 	private:
-		const char* mName;
-		Uint32 mWidth;
-		Uint32 mHeight;
-		DisplayMode mType;
-		SDL_Window* mWindow{nullptr};
+		const char*   mName;
+		Uint32        mWidth;
+		Uint32        mHeight;
+		DisplayMode   mType;
+		SDL_Window*   mWindow{nullptr};
+		Renderer      mRenderer;
 	};
 }

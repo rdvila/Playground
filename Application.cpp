@@ -15,6 +15,9 @@ void Playground::Application::RunLoop()
 
 			OnEvent(&event);
 		}
+
+		mRenderer.Render();
+
 	}
 }
 
@@ -68,10 +71,13 @@ void Application::BootstrapComponents()
 		mHeight,
 		flags
 	);
+
+	mRenderer.OnInitializeComponents(mWindow);
 }
 
 void Application::DestroyComponents()
 {
+	mRenderer.OnDestroyComponents();
 }
 
 Application::Application(const char* name, Uint32 width, Uint32 height, DisplayMode type)

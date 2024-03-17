@@ -1,5 +1,27 @@
 {
   "dependencies": [
-    "sdl2"
+    "directx-headers",
+    {
+      "name": "directxmesh",
+      "features": [
+        "dx12"
+      ]
+    },
+    {
+      "name": "directxtex",
+      "features": [
+        "dx12"
+      ]
+    },
+    "directxtk12",
+    "sdl2",
+    "wil",
+    {
+      "name": "imgui",
+      "features": [
+        "sdl2-binding",
+        "dx12-binding"
+      ]
+    }
   ]
 }
