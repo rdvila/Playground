@@ -6,7 +6,6 @@ namespace Playground {
 	class Renderer {
 
 	public:
-		Renderer();
 		void OnInitializeComponents(SDL_Window* window);
 		void OnResize(Uint32 width, Uint32 height);
 		void OnDestroyComponents();

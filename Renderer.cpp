@@ -124,10 +124,6 @@ void Renderer::WaitForPreviousFrame()
     mFrameIndex = mSwapChain->GetCurrentBackBufferIndex();
 }
 
-Renderer::Renderer()
-{
-}
-
 void Renderer::OnInitializeComponents(SDL_Window* window)
 {    
     // get window size
@@ -136,15 +132,8 @@ void Renderer::OnInitializeComponents(SDL_Window* window)
 
     mFrameIndex = 0;
     
-    mViewport.TopLeftX = 0.0f;
-    mViewport.TopLeftY = 0.0f;
-    mViewport.Width = static_cast<float>(width);
-    mViewport.Height = static_cast<float>(height);
-
-    mScissorRect.left = 0;
-    mScissorRect.top = 0;
-    mScissorRect.right = width;
-    mScissorRect.left = height;   
+    mViewport = { 0.0f, 0.0f, static_cast<float>(width), static_cast<float>(height) };
+    mScissorRect = { 0, 0, static_cast<LONG>(width), static_cast<LONG>(height) };
         
     mRtvDescriptorSize = 0;
 
@@ -155,16 +144,20 @@ void Renderer::OnInitializeComponents(SDL_Window* window)
 	SDL_SysWMinfo systemWMInfo{};
 	SDL_GetWindowWMInfo(window, &systemWMInfo);
 
+    UINT dxgiFactoryFlags = 0;
+
 #if defined(_DEBUG)
 	// Enable debug
 	wil::com_ptr<ID3D12Debug> debugController;
 	THROW_IF_FAILED(D3D12GetDebugInterface(IID_PPV_ARGS(debugController.addressof())));
 	debugController->EnableDebugLayer();
+    // Enable additional debug layers.
+    dxgiFactoryFlags |= DXGI_CREATE_FACTORY_DEBUG;
 #endif
 
 	// create DXGI Factory 
 	wil::com_ptr<IDXGIFactory4> factory;
-	THROW_IF_FAILED(CreateDXGIFactory1(IID_PPV_ARGS(factory.addressof())));
+	THROW_IF_FAILED(CreateDXGIFactory2(dxgiFactoryFlags, IID_PPV_ARGS(factory.addressof())));
 
 	// create Device
 	wil::com_ptr<IDXGIAdapter1> hardwareAdapter;
