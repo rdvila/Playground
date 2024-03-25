@@ -7,6 +7,7 @@
 #include <filesystem>
 #include <vector>
 #include <stdexcept>
+#include <variant>
 
 // SDL
 #define SDL_MAIN_HANDLED

@@ -3,12 +3,11 @@
 
 using namespace Playground;
 
-template<RendererType renderType>
-struct MyApplication final : public Application<renderType> {
+struct MyApplication final : public Application {
 public:
 
-	MyApplication(const char* name, Uint32 width, Uint32 height, DisplayMode type)
-		: Application<renderType>(name, width, height, type)
+	MyApplication(const char* name, Uint32 width, Uint32 height, DisplayMode mode, RendererType type)
+		: Application(name, width, height, mode, type)
 	{
 	}
 
@@ -43,6 +42,6 @@ public:
 
 int WINAPI WinMain(HINSTANCE hInstance, [[maybe_unused]] HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
-	MyApplication<RendererType::D3D12> app("My App", 1280, 720, DisplayMode::WINDOWED);
+	MyApplication app("My App", 1280, 720, DisplayMode::WINDOWED, RendererType::D3D12);
 	return app.RunApplication(hInstance, lpCmdLine, nCmdShow, &app);
 }
