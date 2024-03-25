@@ -3,13 +3,14 @@
 #include "PCH.h"
 
 namespace Playground {
-	class Renderer {
+	class RendererD3D12 final {
 
 	public:
+		RendererD3D12();
+
 		void OnInitializeComponents(SDL_Window* window);
 		void OnResize(Uint32 width, Uint32 height);
 		void OnDestroyComponents();
-
 		void Render();
 
 	private:

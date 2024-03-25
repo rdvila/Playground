@@ -1,5 +1,6 @@
 {
   "dependencies": [
+    "assimp",
     "directx-headers",
     {
       "name": "directxmesh",
@@ -14,14 +15,15 @@
       ]
     },
     "directxtk12",
-    "sdl2",
-    "wil",
     {
       "name": "imgui",
       "features": [
-        "sdl2-binding",
-        "dx12-binding"
+        "dx12-binding",
+        "sdl2-binding"
       ]
-    }
+    },
+    "sdl2",
+    "wil",
+    "d3d12-memory-allocator"
   ]
 }

@@ -4,6 +4,9 @@
 #include <locale>
 #include <codecvt>
 #include <string>
+#include <filesystem>
+#include <vector>
+#include <stdexcept>
 
 // SDL
 #define SDL_MAIN_HANDLED
@@ -21,3 +24,8 @@
 //WIL
 #include <wil/com.h>
 #include <wil/result.h>
+
+// assimp
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>

@@ -1,8 +1,12 @@
-#include "Renderer.h"
+#include "RendererD3D12.h"
 
 using namespace Playground;
 
-void Renderer::GetHardwareAdapter(IDXGIFactory1* pFactory, IDXGIAdapter1** ppAdapter, bool requestHighPerformanceAdapter)
+RendererD3D12::RendererD3D12()
+{
+}
+
+void RendererD3D12::GetHardwareAdapter(IDXGIFactory1* pFactory, IDXGIAdapter1** ppAdapter, bool requestHighPerformanceAdapter)
 {
     *ppAdapter = nullptr;
 
@@ -64,7 +68,7 @@ void Renderer::GetHardwareAdapter(IDXGIFactory1* pFactory, IDXGIAdapter1** ppAda
     *ppAdapter = adapter.detach();
 }
 
-void Renderer::PopulateCommandList()
+void RendererD3D12::PopulateCommandList()
 {
     // Command list allocators can only be reset when the associated 
     // command lists have finished execution on the GPU; apps should use 
@@ -102,7 +106,7 @@ void Renderer::PopulateCommandList()
     THROW_IF_FAILED(mCommandList->Close());
 }
 
-void Renderer::WaitForPreviousFrame()
+void RendererD3D12::WaitForPreviousFrame()
 {
     // WAITING FOR THE FRAME TO COMPLETE BEFORE CONTINUING IS NOT BEST PRACTICE.
     // This is code implemented as such for simplicity. The D3D12HelloFrameBuffering
@@ -124,7 +128,7 @@ void Renderer::WaitForPreviousFrame()
     mFrameIndex = mSwapChain->GetCurrentBackBufferIndex();
 }
 
-void Renderer::OnInitializeComponents(SDL_Window* window)
+void RendererD3D12::OnInitializeComponents(SDL_Window* window)
 {    
     // get window size
 	int width, height;
@@ -345,11 +349,11 @@ void Renderer::OnInitializeComponents(SDL_Window* window)
     // ------------------------------- END LOAD ASSETS -------------------------------
 }
 
-void Renderer::OnResize([[maybe_unused]] Uint32 width, [[maybe_unused]] Uint32 height)
+void RendererD3D12::OnResize([[maybe_unused]] Uint32 width, [[maybe_unused]] Uint32 height)
 {
 }
 
-void Renderer::OnDestroyComponents()
+void RendererD3D12::OnDestroyComponents()
 {
     // Ensure that the GPU is no longer referencing resources that are about to be
     // cleaned up by the destructor.
@@ -358,7 +362,7 @@ void Renderer::OnDestroyComponents()
     CloseHandle(mFenceEvent);
 }
 
-void Renderer::Render()
+void RendererD3D12::Render()
 {
     // Record all the commands we need to render the scene into the command list.
     PopulateCommandList();
