@@ -19,14 +19,12 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Include\Application.h" />
     <ClInclude Include="Include\Graphics\DX12\DX12MeshLoader.h" />
     <ClInclude Include="Include\Graphics\DX12\DX12Renderer.h" />
     <ClInclude Include="Include\Graphics\Mesh.h" />
     <ClInclude Include="Include\PCH.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\Application.cpp" />
     <ClCompile Include="Source\DX12MeshLoader.cpp" />
     <ClCompile Include="Source\DX12Renderer.cpp" />
     <ClCompile Include="Source\main.cpp" />

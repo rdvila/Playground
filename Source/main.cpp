@@ -1,18 +1,84 @@
 #include "PCH.h"
-#include "Application.h"
 #include "Graphics/DX12/DX12Renderer.h"
 
-template<typename R>
-struct MyApplication final : public Playground::Application {
+enum class DisplayMode
+{
+	WINDOWED,
+	WINDOWED_FULLSCREEN,
+	FULLSCREEN
+};
+
+struct Window final
+{
 public:
 
-	MyApplication(const char* name, Uint32 width, Uint32 height, Playground::DisplayMode mode)
-		: Application(name, width, height, mode)
+	Window(const char* name, Uint32 width, Uint32 height, DisplayMode mode)
+		: mName(name), mWidth(width), mHeight(height), mMode(mode)
 	{
+
+	}
+
+	~Window()
+	{
+		SDL_DestroyWindow(mWindow);
+	}
+
+	// Application interface
+	void Create() {
+		Uint32 flags = 0;
+
+		switch (mMode)
+		{
+		case DisplayMode::WINDOWED:
+			flags |= (SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+			break;
+		case DisplayMode::WINDOWED_FULLSCREEN:
+			flags |= (SDL_WINDOW_SHOWN | SDL_WINDOW_FULLSCREEN_DESKTOP);
+			break;
+		case DisplayMode::FULLSCREEN:
+			flags |= (SDL_WINDOW_SHOWN | SDL_WINDOW_FULLSCREEN);
+			break;
+		default:
+			break;
+		}
+
+		if (mWindow)
+		{
+			SDL_DestroyWindow(mWindow);
+		}
+
+		mWindow = SDL_CreateWindow(
+			mName,
+			SDL_WINDOWPOS_CENTERED,
+			SDL_WINDOWPOS_CENTERED,
+			mWidth,
+			mHeight,
+			flags
+		);
+	}
+
+	//Getters
+	[[nodiscard]] SDL_Window* GetWindow() { return mWindow; }
+
+private:
+	const char*   mName;
+	Uint32        mWidth;
+	Uint32        mHeight;
+	DisplayMode   mMode;
+	SDL_Window*   mWindow{ nullptr };
+};
+
+template<typename R>
+struct MyApplication final {
+public:
+
+	MyApplication(const char* name, Uint32 width, Uint32 height, DisplayMode mode)
+	{
+		mWindow = std::make_unique<Window>(name, width, height, mode);
 		mRenderer = std::make_unique<R>();
 	}
 
-	~MyApplication() override
+	~MyApplication()
 	{
 	}
 
@@ -20,20 +86,17 @@ public:
 	{
 	}
 
-	void Initilize() override
+	void Initilize()
 	{
-		Application::Initilize();
-
+		mWindow->Create();
 		mRenderer->OnInitializeComponents(
-			this->GetWindow()
+			mWindow->GetWindow()
 		);
 	}
 
-	void Shutdown() override
+	void Shutdown()
 	{
 		mRenderer->OnDestroyComponents();
-
-		Application::Shutdown();
 	}
 
 	void OnEvent([[maybe_unused]] const SDL_Event* event)
@@ -51,6 +114,7 @@ public:
 
 private:
 	std::unique_ptr<R> mRenderer;
+	std::unique_ptr<Window> mWindow;
 };
 
 template<typename T>
@@ -90,6 +154,6 @@ int RunApplication(HINSTANCE hInstance, LPSTR lpCmdLine, int nCmdShow, T* applic
 
 int WINAPI WinMain(HINSTANCE hInstance, [[maybe_unused]] HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
-	MyApplication<Playground::Graphics::DX12Renderer> app("My App", 1280, 720, Playground::DisplayMode::WINDOWED);
+	MyApplication<Playground::Graphics::DX12Renderer> app("My App", 1280, 720, DisplayMode::WINDOWED);
 	return RunApplication(hInstance, lpCmdLine, nCmdShow, &app);
 }

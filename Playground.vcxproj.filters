@@ -17,9 +17,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Include\Application.h">
-      <Filter>Include</Filter>
-    </ClInclude>
     <ClInclude Include="Include\PCH.h">
       <Filter>Include</Filter>
     </ClInclude>
@@ -34,9 +31,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\Application.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
     <ClCompile Include="Source\DX12MeshLoader.cpp">
       <Filter>Source</Filter>
     </ClCompile>
