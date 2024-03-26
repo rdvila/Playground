@@ -1,12 +1,13 @@
-#include "RendererD3D12.h"
+#include "PCH.h"
+#include "Graphics/DX12/DX12Renderer.h"
 
-using namespace Playground;
+using namespace Playground::Graphics;
 
-RendererD3D12::RendererD3D12()
+DX12Renderer::DX12Renderer()
 {
 }
 
-void RendererD3D12::GetHardwareAdapter(IDXGIFactory1* pFactory, IDXGIAdapter1** ppAdapter, bool requestHighPerformanceAdapter)
+void DX12Renderer::GetHardwareAdapter(IDXGIFactory1* pFactory, IDXGIAdapter1** ppAdapter, bool requestHighPerformanceAdapter)
 {
     *ppAdapter = nullptr;
 
@@ -68,7 +69,7 @@ void RendererD3D12::GetHardwareAdapter(IDXGIFactory1* pFactory, IDXGIAdapter1** 
     *ppAdapter = adapter.detach();
 }
 
-void RendererD3D12::PopulateCommandList()
+void DX12Renderer::PopulateCommandList()
 {
     // Command list allocators can only be reset when the associated 
     // command lists have finished execution on the GPU; apps should use 
@@ -86,7 +87,7 @@ void RendererD3D12::PopulateCommandList()
     mCommandList->RSSetScissorRects(1, &mScissorRect);
 
     // Indicate that the back buffer will be used as a render target.
-    CD3DX12_RESOURCE_BARRIER barrier1 = CD3DX12_RESOURCE_BARRIER::Transition(mRenderTargets[mFrameIndex].get(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
+    CD3DX12_RESOURCE_BARRIER  barrier1 = CD3DX12_RESOURCE_BARRIER::Transition(mRenderTargets[mFrameIndex].get(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
     mCommandList->ResourceBarrier(1, &barrier1);
 
     CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle(mRtvHeap->GetCPUDescriptorHandleForHeapStart(), mFrameIndex, mRtvDescriptorSize);
@@ -100,13 +101,13 @@ void RendererD3D12::PopulateCommandList()
     mCommandList->DrawInstanced(3, 1, 0, 0);
 
     // Indicate that the back buffer will now be used to present.
-    CD3DX12_RESOURCE_BARRIER barrier2 = CD3DX12_RESOURCE_BARRIER::Transition(mRenderTargets[mFrameIndex].get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
+    CD3DX12_RESOURCE_BARRIER  barrier2 = CD3DX12_RESOURCE_BARRIER::Transition(mRenderTargets[mFrameIndex].get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
     mCommandList->ResourceBarrier(1, &barrier2);
 
     THROW_IF_FAILED(mCommandList->Close());
 }
 
-void RendererD3D12::WaitForPreviousFrame()
+void DX12Renderer::WaitForPreviousFrame()
 {
     // WAITING FOR THE FRAME TO COMPLETE BEFORE CONTINUING IS NOT BEST PRACTICE.
     // This is code implemented as such for simplicity. The D3D12HelloFrameBuffering
@@ -128,56 +129,56 @@ void RendererD3D12::WaitForPreviousFrame()
     mFrameIndex = mSwapChain->GetCurrentBackBufferIndex();
 }
 
-void RendererD3D12::OnInitializeComponents(SDL_Window* window)
+void DX12Renderer::OnInitializeComponents(SDL_Window* window)
 {    
     // get window size
-	int width, height;
-	SDL_GetWindowSize(window, &width, &height);
+    int width, height;
+    SDL_GetWindowSize(window, &width, &height);
 
     mFrameIndex = 0;
-    
+
     mViewport = { 0.0f, 0.0f, static_cast<float>(width), static_cast<float>(height) };
     mScissorRect = { 0, 0, static_cast<LONG>(width), static_cast<LONG>(height) };
-        
+
     mRtvDescriptorSize = 0;
 
     // get aspect ratio
     float aspectRatio = static_cast<float>(width) / static_cast<float>(height);
 
-	// get window handler
-	SDL_SysWMinfo systemWMInfo{};
-	SDL_GetWindowWMInfo(window, &systemWMInfo);
+    // get window handler
+    SDL_SysWMinfo systemWMInfo{};
+    SDL_GetWindowWMInfo(window, &systemWMInfo);
 
     UINT dxgiFactoryFlags = 0;
 
 #if defined(_DEBUG)
-	// Enable debug
-	wil::com_ptr<ID3D12Debug> debugController;
-	THROW_IF_FAILED(D3D12GetDebugInterface(IID_PPV_ARGS(debugController.addressof())));
-	debugController->EnableDebugLayer();
+    // Enable debug
+    wil::com_ptr<ID3D12Debug> debugController;
+    THROW_IF_FAILED(D3D12GetDebugInterface(IID_PPV_ARGS(debugController.addressof())));
+    debugController->EnableDebugLayer();
     // Enable additional debug layers.
     dxgiFactoryFlags |= DXGI_CREATE_FACTORY_DEBUG;
 #endif
 
-	// create DXGI Factory 
-	wil::com_ptr<IDXGIFactory4> factory;
-	THROW_IF_FAILED(CreateDXGIFactory2(dxgiFactoryFlags, IID_PPV_ARGS(factory.addressof())));
+    // create DXGI Factory 
+    wil::com_ptr<IDXGIFactory4> factory;
+    THROW_IF_FAILED(CreateDXGIFactory2(dxgiFactoryFlags, IID_PPV_ARGS(factory.addressof())));
 
-	// create Device
-	wil::com_ptr<IDXGIAdapter1> hardwareAdapter;
-	GetHardwareAdapter(factory.get(), hardwareAdapter.addressof(), true);
+    // create Device
+    wil::com_ptr<IDXGIAdapter1> hardwareAdapter;
+    GetHardwareAdapter(factory.get(), hardwareAdapter.addressof(), true);
 
-	THROW_IF_FAILED(D3D12CreateDevice(
-		hardwareAdapter.get(),
+    THROW_IF_FAILED(D3D12CreateDevice(
+        hardwareAdapter.get(),
         D3D_FEATURE_LEVEL_11_0,
         IID_PPV_ARGS(mDevice.addressof())
-	));
+    ));
 
     // describe and create the command queue
     D3D12_COMMAND_QUEUE_DESC queueDesc{};
     queueDesc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
     queueDesc.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
-	
+
     THROW_IF_FAILED(mDevice->CreateCommandQueue(
         &queueDesc,
         IID_PPV_ARGS(mCommandQueue.addressof())
@@ -316,7 +317,7 @@ void RendererD3D12::OnInitializeComponents(SDL_Window* window)
             IID_PPV_ARGS(mVertexBuffer.addressof())));
 
         // Copy the triangle data to the vertex buffer.
-        UINT8* pVertexDataBegin{nullptr};
+        UINT8* pVertexDataBegin{ nullptr };
         CD3DX12_RANGE readRange(0, 0);        // We do not intend to read from this resource on the CPU.
         THROW_IF_FAILED(mVertexBuffer->Map(0, &readRange, reinterpret_cast<void**>(&pVertexDataBegin)));
         memcpy(pVertexDataBegin, triangleVertices, sizeof(triangleVertices));
@@ -349,11 +350,11 @@ void RendererD3D12::OnInitializeComponents(SDL_Window* window)
     // ------------------------------- END LOAD ASSETS -------------------------------
 }
 
-void RendererD3D12::OnResize([[maybe_unused]] Uint32 width, [[maybe_unused]] Uint32 height)
+void DX12Renderer::OnResize([[maybe_unused]] Uint32 width, [[maybe_unused]] Uint32 height)
 {
 }
 
-void RendererD3D12::OnDestroyComponents()
+void DX12Renderer::OnDestroyComponents()
 {
     // Ensure that the GPU is no longer referencing resources that are about to be
     // cleaned up by the destructor.
@@ -362,7 +363,7 @@ void RendererD3D12::OnDestroyComponents()
     CloseHandle(mFenceEvent);
 }
 
-void RendererD3D12::Render()
+void DX12Renderer::Render()
 {
     // Record all the commands we need to render the scene into the command list.
     PopulateCommandList();
