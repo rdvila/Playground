@@ -1,17 +1,18 @@
 #pragma once
 
 #include "PCH.h"
+#include "Renderer.h"
 
-namespace Playground {
-	class RendererD3D12 final {
+namespace Playground  {
+	class RendererD3D12 final : public Renderer {
 
 	public:
 		RendererD3D12();
 
-		void OnInitializeComponents(SDL_Window* window);
-		void OnResize(Uint32 width, Uint32 height);
-		void OnDestroyComponents();
-		void Render();
+		void OnInitializeComponents(SDL_Window* window) override;
+		void OnResize(Uint32 width, Uint32 height) override;
+		void OnDestroyComponents() override;
+		void Render() override;
 
 	private:
 

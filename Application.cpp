@@ -1,4 +1,5 @@
 #include "Application.h"
+#include "RendererD3D12.h"
 
 using namespace Playground;
 
@@ -8,10 +9,10 @@ Application::Application(const char* name, Uint32 width, Uint32 height, DisplayM
 	switch (mType)
 	{
 	case RendererType::D3D12:
-		mRenderer = RendererD3D12();
+		mRenderer = std::unique_ptr<Renderer>(new RendererD3D12());
 		break;
 	case RendererType::VULKAN:
-		mRenderer = RendererVulkan();
+		// Vulkan renderer
 		break;
 	}
 }
@@ -22,7 +23,6 @@ Application::~Application()
 
 void Application::RunLoop()
 {
-	auto renderVisitor = [](auto& renderer) { renderer.Render(); };
 	while (true) {
 		SDL_Event event;
 		while (SDL_PollEvent(&event)) {
@@ -33,7 +33,7 @@ void Application::RunLoop()
 
 			OnEvent(&event);
 		}
-		std::visit(renderVisitor, mRenderer);
+		mRenderer->Render();
 	}
 }
 
@@ -63,7 +63,6 @@ int Application::RunApplication(HINSTANCE hInstance, LPSTR lpCmdLine, int nCmdSh
 void Application::BootstrapComponents()
 {
 	Uint32 flags = 0;
-	auto initializeVisitor = [&](auto& renderer) { renderer.OnInitializeComponents(mWindow); };
 
 	switch (mMode)
 	{
@@ -89,11 +88,10 @@ void Application::BootstrapComponents()
 		flags
 	);
 
-	std::visit(initializeVisitor, mRenderer);
+	mRenderer->OnInitializeComponents(mWindow);
 }
 
 void Application::DestroyComponents()
 {
-	auto destroyVisitor = [](auto& renderer) { renderer.OnDestroyComponents(); };
-	std::visit(destroyVisitor, mRenderer);
+	mRenderer->OnDestroyComponents();
 }

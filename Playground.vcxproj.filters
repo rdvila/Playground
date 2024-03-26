@@ -21,13 +21,16 @@
     <ClCompile Include="RendererD3D12.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Mesh.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="RendererVulkan.cpp">
+    <ClCompile Include="MeshLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Application.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshLoaderD3D12.h">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshLoaderD3D12.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -41,10 +44,10 @@
     <ClInclude Include="RendererD3D12.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Mesh.h">
+    <ClInclude Include="MeshLoader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="RendererVulkan.h">
+    <ClInclude Include="Renderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

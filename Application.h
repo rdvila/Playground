@@ -1,8 +1,7 @@
 #pragma once
 
 #include "PCH.h"
-#include "RendererD3D12.h"
-#include "RendererVulkan.h"
+#include "Renderer.h"
 
 namespace Playground {
 
@@ -55,6 +54,6 @@ namespace Playground {
 		DisplayMode   mMode;
 		SDL_Window*   mWindow{nullptr};
 		RendererType  mType;
-		std::variant<RendererD3D12, RendererVulkan> mRenderer;
+		std::unique_ptr<Renderer> mRenderer;
 	};
 }

@@ -4,13 +4,13 @@
 
 namespace Playground::Graphics {
 
-	class Mesh final {
+	class MeshLoader {
 
 	public:
-		Mesh(const std::filesystem::path& path);
+		MeshLoader(const std::filesystem::path& path);
 		void Initialize();
-		void Load();
-		void Unload();
+		virtual void Load() = 0;
+		virtual void Unload() = 0;
 		void Destroy();
 
 

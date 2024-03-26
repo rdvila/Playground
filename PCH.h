@@ -21,6 +21,7 @@
 #include <d3dcompiler.h>
 #include <DirectXMath.h>
 #include <DirectXColors.h>
+#include <D3D12MemAlloc.h>
 
 //WIL
 #include <wil/com.h>

@@ -1,15 +1,15 @@
 #include "PCH.h"
-#include "Mesh.h"
+#include "MeshLoader.h"
 
 using namespace Playground::Graphics;
 
 
-Mesh::Mesh(const std::filesystem::path& path)
+MeshLoader::MeshLoader(const std::filesystem::path& path)
 	: mPath(path), mVextexCount(0), mIndexCount(0)
 {
 }
 
-void Mesh::Initialize()
+void MeshLoader::Initialize()
 {
 	Assimp::Importer importer;
     const aiScene* scene = importer.ReadFile(mPath.string(),
@@ -46,14 +46,6 @@ void Mesh::Initialize()
     }
 }
 
-void Mesh::Load()
-{
-}
-
-void Mesh::Unload()
-{
-}
-
-void Mesh::Destroy()
+void MeshLoader::Destroy()
 {
 }
